@@ -7,8 +7,8 @@ using System.Reflection;
 using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using ExtraMath;
 #if GODOT 
+using ExtraMath;
 using Godot;
 #endif
 using Newtonsoft.Json;

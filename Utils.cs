@@ -18,8 +18,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Threading;
-using ExtraMath;
 #if GODOT
+using ExtraMath;
 using Godot;
 #endif
 using static System.Math;
