@@ -240,7 +240,7 @@ public static partial class Utils
         IntPtr ptr = Marshal.AllocHGlobal(size);
         try
         {
-            Marshal.StructureToPtr(s, ptr, true);
+            Marshal.StructureToPtr(s, ptr, false);
         }
         catch (Exception ex)
         {
@@ -257,19 +257,17 @@ public static partial class Utils
     }
     public unsafe static T DeserializeStruct<T>(byte[] dt) where T : struct
     {
-        T ret = new T();
         try
         {
             fixed (byte* bptr = dt)
             {
-                Marshal.PtrToStructure<T>((IntPtr)bptr, ret);
+                return (T)Marshal.PtrToStructure((IntPtr)bptr, typeof(T));
             }
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
             throw new DeserializationFailedException("Deserialization failure", ex);
         }
-        return ret;
     }
     public class FIFO<T> : IEnumerable<T>, IEnumerable
     {
