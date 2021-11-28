@@ -20,5 +20,20 @@ public static partial class Utils
     {
         return new Vector3(pos.x * Constants.TILE_SIDE_LENGTH, 0, -pos.y * Constants.TILE_SIDE_LENGTH);
     }
+    public static Vector3 FadeVector(Vector3 v, float multip)
+    {
+        var d = v.Normalized() * multip;
+        if(d.Length() > v.Length())
+            return new Vector3(0,0,0);
+        return v - d;
+    }
+
+    public static Vector2 FadeVector(Vector2 v, float multip)
+    {
+        var d = v.Normalized() * multip;
+        if(d.Length() > v.Length())
+            return new Vector2(0,0,0);
+        return v - d;
+    }
 }
 #endif
