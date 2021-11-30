@@ -32,7 +32,7 @@ public static partial class Utils
     {
         var d = v.Normalized() * multip;
         if(d.Length() > v.Length())
-            return new Vector2(0,0,0);
+            return new Vector2(0,0);
         return v - d;
     }
 }

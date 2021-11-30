@@ -1,4 +1,5 @@
-﻿
+﻿using System.Reflection.Emit;
+
 /* Utils.cs
 
 General utilities.
@@ -41,9 +42,18 @@ public static partial class Utils
             act(i);
         }
     }
+    public static List<T> RepeatN<T>(int n, Func<int, T> act)
+    {
+        var ret = new List<T>();
+        for (int i = 0; i < n; i++)
+        {
+            ret.Add(act(i));
+        }
+        return ret;
+    }
     public static T EnumNext<T>(T e) where T : Enum
     {
-        var l = Enum.GetValues(typeof(T));
+        var l = (T[])Enum.GetValues(typeof(T));
         bool f = false;
         foreach (var it in l)
         {
@@ -54,11 +64,19 @@ public static partial class Utils
                 f = true;
             }
         }
-        foreach (var it in l)
+        return l[0];
+    }
+    public static T EnumPrev<T>(T e) where T : Enum
+    {
+        var l =(T[]) Enum.GetValues(typeof(T));
+        T prev = l[l.Length-1];
+        foreach(var it in l)
         {
-            return (T)it;
+            if(it.Equals(e))
+                return prev;
+            prev = (T)it;
         }
-        throw new Exception();
+        throw new Exception("Invalid enum value");
     }
     public static string ConcatPaths(string p0, string p1)
     {
