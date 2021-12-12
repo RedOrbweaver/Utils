@@ -35,5 +35,10 @@ public static partial class Utils
             return new Vector2(0,0);
         return v - d;
     }
+    public static void CallDeferred(Action action)
+    {
+        GlobalScript.GS.QueueDeferred(action);
+    }
+    public static void Defer(Action action) => CallDeferred(action);
 }
 #endif

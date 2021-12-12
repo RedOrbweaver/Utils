@@ -218,42 +218,5 @@ public static partial class Utils
         }
         return default(T);
     }
-    // public interface IDelegateDeferrable
-    // {
-    //     void CallDeferred(Action<object[]> action, params object[] parameters)
-    //     {
-    //         Assert(this is Node);
-    //         var node = (Node)this;
-    //         node.CallDeferred(nameof(HandleDeferredMultiArgs), action, parameters);
-    //     }
-    //     void CallDeferred<T>(Action<T> action, T param)
-    //     {
-    //         Assert(this is Node);
-    //         var node = (Node)this;
-    //         node.CallDeferred(nameof(HandleDeferredArg), (Action<object>)((object o) => action((T)o)), (object)param);
-    //     }
-    //     void CallDeferred(Action action)
-    //     {
-    //         Assert(this is Node);
-    //         var node = (Node)this;
-    //         node.CallDeferred("HandleDeferred", action);
-    //     }
-    //     void HandleDeferredMultiArgs(Action<object[]> act, object[] parameters)
-    //     {
-    //         act.DynamicInvoke(new object[]{parameters});
-    //     }
-    //     void HandleDeferredArg(Action<object> act, object parameter)
-    //     {
-    //         act.DynamicInvoke(new object[]{parameter});
-    //     }
-    //     void HandleDeferred(Action act)
-    //     {
-    //         act.DynamicInvoke();
-    //     }
-    // }
-    // public static void CallDeferred(IDelegateDeferrable caller, Action action)
-    // {
-    //     caller.CallDeferred(action);
-    // }
 #endif
 }
