@@ -53,7 +53,7 @@ public static partial class Utils
         }
         return dif;
     }
-    public static T DeserializeFromFile<T>(string path, bool failsafe = false) where T : class
+    public static T DeserializeFromFile<T>(string path, bool returnnullonfail = false) where T : class
     {
         Assert(FileExists(path));
         T o = null;
@@ -63,12 +63,12 @@ public static partial class Utils
         }
         catch (Exception)
         {
-            if (!failsafe)
+            if (!returnnullonfail)
                 throw;
             return null;
         }
 
-        if (!failsafe)
+        if (!returnnullonfail)
             Assert(o != null);
 
         return o;

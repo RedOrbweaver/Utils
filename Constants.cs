@@ -21,6 +21,8 @@ public static class Constants
     public const string TILESET_DIRECTORY = "res://Data/Tilesets";
 
     public const string TILE_MODEL_DIRECTORY = "res://Models/Tiles";
+    public const string PLAYER_THEMES_DIRECTORY = "res://Themes/PlayerThemes";
+    public const string THEMEABLE_ICONS_PATH = "res://Icons/Themeable";
 
     public const string SETTINGS_PATH = "user://settings.json"; 
 

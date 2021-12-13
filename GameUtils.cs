@@ -37,7 +37,12 @@ public static partial class Utils
     }
     public static void CallDeferred(Action action)
     {
-        GlobalScript.GS.QueueDeferred(action);
+        if(GlobalUtilsScript.GUS == null && Engine.EditorHint)
+        {
+            GD.PrintErr("Missed in-editor action!: " + action.ToString());
+            return;
+        }
+        GlobalUtilsScript.GUS.QueueDeferred(action);
     }
     public static void Defer(Action action) => CallDeferred(action);
 }
