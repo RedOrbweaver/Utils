@@ -24,6 +24,10 @@ public static partial class Utils
             parent.RemoveChild(node);
         node.QueueFree();
     }
+    public static void Destroy(this Node node)
+    {
+        DestroyNode(node);
+    }
     public static string EnsurePathExists(string path)
     {
         Assert(!FileExists(path), "This function is meant for directories, not files");
@@ -209,7 +213,7 @@ public static partial class Utils
         }, relativepaths, skiphidden);
     }
 
-    public static T FindChild<T>(Node parent)
+    public static T FindChild<T>(this Node parent)
     {
         foreach (var it in parent.GetChildren())
         {
@@ -217,6 +221,56 @@ public static partial class Utils
                 return (T)it;
         }
         return default(T);
+    }
+    public class GDProperty
+    {
+        public string Name {get; protected set;}
+        public Godot.Variant.Type Type {get; protected set;}
+        public Godot.PropertyHint Hint {get; protected set;}
+        public string HintString {get; protected set;} = "";
+        
+        public GDProperty(string name, Godot.Variant.Type type, Godot.PropertyHint hint, string hintstring = "")
+        {
+            Assert(name != null && hintstring != null);
+            this.Name = name;
+            this.Type = type;
+            this.Hint = hint;
+            this.HintString = hintstring;
+        }
+        public GDProperty(Godot.Collections.Dictionary prop)
+        {
+            Assert(prop.Contains("name"), "Not a valid property! Missing 'name'!");
+            Assert(prop.Contains("type"), "Not a valid property! Missing 'type'!");
+            Assert(prop.Contains("hint"), "Not a valid property! Missing 'hint'!");
+            this.Name = (string)prop["name"];
+            this.Type = (Godot.Variant.Type)prop["type"];
+            this.Hint = (Godot.PropertyHint)prop["hint"];
+            if(prop.Contains("hint_string"))
+                this.HintString = (string)prop["hint_string"];
+            else
+                this.HintString = "";
+        }
+        public static GDProperty FromDictionary(Godot.Collections.Dictionary dict)
+        {
+            return new GDProperty(dict);
+        }
+        public static Godot.Collections.Dictionary ToDictionary(GDProperty prop)
+        {
+            var ret = new Godot.Collections.Dictionary();
+            ret.Add("name", prop.Name);
+            ret.Add("type", prop.Type);
+            ret.Add("hint", prop.Hint);
+            ret.Add("hint_string", prop.HintString);
+            return ret;
+        }
+        public Godot.Collections.Dictionary ToDictionary()
+        {
+            return ToDictionary(this);
+        }
+        public static implicit operator Godot.Collections.Dictionary(GDProperty prop)
+        {
+            return prop.ToDictionary();
+        }
     }
 #endif
 }

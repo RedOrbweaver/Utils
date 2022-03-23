@@ -19,7 +19,6 @@ using Expression = System.Linq.Expressions.Expression;
 [Tool]
 public class GlobalUtilsScript : Node
 {
-    //static GlobalUtilsScript _GUS;
 
     ConcurrentQueue<Action> _toExec = new ConcurrentQueue<Action>();
     void DequeDeferred()
@@ -35,29 +34,8 @@ public class GlobalUtilsScript : Node
         CallDeferred(nameof(DequeDeferred));
     }
     public static GlobalUtilsScript GUS;
-    // {
-    //     get
-    //     {
-    //         if(_GUS == null)
-    //         {
-    //             if(Engine.EditorHint)
-    //             {
-    //                 _GUS = new GlobalUtilsScript();
-    //             }
-    //             else 
-    //                 throw new NullReferenceException("GLOBAL UTILITY SCRIPT NOT ATTACHED! Did you forget to add it before using any of its features?");
-    //         }
-    //         return _GUS;
-    //     }
-    //     protected set
-    //     {
-    //         _GUS = value;
-    //     }
-    // }
     public GlobalUtilsScript()
     {
         GUS = this;
-        // Assert(_GUS == null || Engine.EditorHint);
-        // _GUS = this;
     }
 }
