@@ -22,12 +22,26 @@ public static class Constants
 
     public const string TILE_MODEL_DIRECTORY = "res://Models/Tiles";
     public const string PLAYER_THEMES_DIRECTORY = "res://Themes/PlayerThemes";
+    public const string DEFAULT_PLAYER_AVATAR_PATH = "res://Icons/Themable/PlayerAvatars/DefaultAvatar.png";
+    public const string DEFAULT_PLAYER_ICON_PATH = "res://Icons/Themable/PlayerIcons/DefaultIcon.png";
     public const string DEFAULT_PLAYER_THEME_PATH = PLAYER_THEMES_DIRECTORY + "/DefaultTheme.json";
     public const string THEMEABLE_ICONS_DIRECTORY = "res://Icons/Themeable";
 
-    public const string SHADER_PRIMARY_THEME_SETTER = "PrimaryColor";
-    public const string SHADER_SECONDARY_THEME_SETTER = "SecondaryColor";
-    public const string SHADER_TERTIARY_THEME_SETTER = "TertiaryColor";
+    public const string SHADER_PRIMARY_THEME_SETTER = "primary_color";
+    public const string SHADER_SECONDARY_THEME_SETTER = "secondary_color";
+    public const string SHADER_TERTIARY_THEME_SETTER = "tertiary_color";
+    public const string SHADER_PRIMARY_ENABLED = "primary_enabled";
+    public const string SHADER_SECONDARY_ENABLED = "secondary_enabled";
+    public const string SHADER_TERTIARY_ENABLED = "tertiary_enabled";
+    public const string SHADER_ICON_ENABLED_THEME_SETTER = "icon_enabled";
+    public const string SHADER_ICON_TEXTURE_THEME_SETTER = "icon_texture";
+    public const string SHADER_ICON_SCALE_THEME_SETTER = "icon_scale";
+    public const string SHADER_ICON_OFFSET_THEME_SETTER = "icon_offset";
+    public const string SHADER_MASK_ENABLED_THEME_SETTER = "mask_enabled";
+    public const string SHADER_MASK_TEXTURE_THEME_SETTER = "mask_texture";
+    public const string SHADER_BILLBOARD_ENABLED = "billboard_enabled";
+    public const string SHADER_TEXTURE_ENABLED = "texture_enabled";
+    public const string SHADER_BACKGROUND_OPACITY = "background_alpha";
 
     public const string SETTINGS_PATH = "user://settings.json"; 
 

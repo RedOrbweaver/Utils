@@ -222,6 +222,13 @@ public static partial class Utils
         }
         return default(T);
     }
+    public static T GetNodeSafe<T>(this Node root, string path) where T : Node
+    {
+        Node node = root.GetNode(path);
+        Assert<KeyNotFoundException>(node != null, $"Could not find node: {path}");
+        Assert(node is T, $"Node {path} was not of type {typeof(T).Name}");
+        return (T)node;
+    }
     public class GDProperty
     {
         public string Name {get; protected set;}
@@ -271,6 +278,55 @@ public static partial class Utils
         {
             return prop.ToDictionary();
         }
+    }
+    public interface IExtendedProperties
+    {
+        Dictionary<string, (Func<object> getter, Action<object> setter, Func<bool> predicate, GDProperty prop)> Actions {get; set;}
+        bool OnGet(string property, out object ret)
+        {
+            if(Actions.ContainsKey(property) && Actions[property].predicate())
+            {
+                ret = Actions[property].getter();
+                return true;
+            }
+            ret = null;
+            return false;
+        }
+        bool OnSet(string property, object value)
+        {
+            if(Actions.ContainsKey(property) && Actions[property].predicate())
+            {
+                Actions[property].setter(value);
+                return true;
+            }
+            return false;
+        }
+        Godot.Collections.Array OnGetPropertyList()
+        {
+            var ret = new Godot.Collections.Array();
+            foreach(var kv in Actions)
+            {
+                if(kv.Value.predicate())
+                    ret.Add(kv.Value.prop.ToDictionary());
+            }
+            return ret;
+        }
+        void AddProperty(GDProperty prop, Func<object> getter, Action<object> setter, Func<bool> predicate = null)
+        {
+            if(predicate == null)
+                predicate = () => true;
+            Actions.Add(prop.Name, (getter, setter, predicate, prop));
+        }
+        void RemoveProperty(string name, bool ignoremissing = false)
+        {
+            if(!Actions.ContainsKey(name))
+            {
+                Assert(ignoremissing);
+                return;
+            }
+            Actions.Remove(name);
+        }
+
     }
 #endif
 }
