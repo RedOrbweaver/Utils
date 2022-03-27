@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using System.Web;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime;
@@ -281,12 +283,14 @@ public static partial class Utils
     }
     public interface IExtendedProperties
     {
-        Dictionary<string, (Func<object> getter, Action<object> setter, Func<bool> predicate, GDProperty prop)> Actions {get; set;}
+        Dictionary<string, (Func<object> getter, Action<object> setter, Func<bool> predicate, GDProperty prop)> ExtendedProperties {get; set;}
+        List<string> ExtendedPropertiesOrdered {get; set;}
+        
         bool OnGet(string property, out object ret)
         {
-            if(Actions.ContainsKey(property) && Actions[property].predicate())
+            if(ExtendedProperties.ContainsKey(property))
             {
-                ret = Actions[property].getter();
+                ret = ExtendedProperties[property].getter();
                 return true;
             }
             ret = null;
@@ -294,9 +298,9 @@ public static partial class Utils
         }
         bool OnSet(string property, object value)
         {
-            if(Actions.ContainsKey(property) && Actions[property].predicate())
+            if(ExtendedProperties.ContainsKey(property))
             {
-                Actions[property].setter(value);
+                ExtendedProperties[property].setter(value);
                 return true;
             }
             return false;
@@ -304,10 +308,19 @@ public static partial class Utils
         Godot.Collections.Array OnGetPropertyList()
         {
             var ret = new Godot.Collections.Array();
-            foreach(var kv in Actions)
+            GD.Print("----------------");
+            foreach(var k in ExtendedPropertiesOrdered)
             {
-                if(kv.Value.predicate())
-                    ret.Add(kv.Value.prop.ToDictionary());
+                GD.Print("!" + k);
+            }
+            foreach(var kv in ExtendedProperties)
+            {
+                GD.Print("@" + kv.Key);
+            }
+            foreach(var k in ExtendedPropertiesOrdered)
+            {
+                if(ExtendedProperties[k].predicate())
+                    ret.Add(ExtendedProperties[k].prop.ToDictionary());
             }
             return ret;
         }
@@ -315,16 +328,19 @@ public static partial class Utils
         {
             if(predicate == null)
                 predicate = () => true;
-            Actions.Add(prop.Name, (getter, setter, predicate, prop));
+            Assert(!ExtendedProperties.ContainsKey(prop.Name), "Property already present!");
+            ExtendedProperties.Add(prop.Name, (getter, setter, predicate, prop));
+            ExtendedPropertiesOrdered.Add(prop.Name);
         }
         void RemoveProperty(string name, bool ignoremissing = false)
         {
-            if(!Actions.ContainsKey(name))
+            if(!ExtendedProperties.ContainsKey(name))
             {
-                Assert(ignoremissing);
+                Assert(ignoremissing, $"Extended property '{name}' was not found!");
                 return;
             }
-            Actions.Remove(name);
+            ExtendedPropertiesOrdered.Remove(name);
+            ExtendedProperties.Remove(name);
         }
 
     }
