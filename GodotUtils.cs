@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define DEBUG_EXTENDED_PROPERTIES
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -224,12 +225,16 @@ public static partial class Utils
         }
         return default(T);
     }
-    public static T GetNodeSafe<T>(this Node root, string path) where T : Node
+    public static T GetNodeSafe<T>(this Node root, string path, string not_found_message) where T : Node
     {
         Node node = root.GetNode(path);
-        Assert<KeyNotFoundException>(node != null, $"Could not find node: {path}");
+        Assert<Exception>(node != null, not_found_message);
         Assert(node is T, $"Node {path} was not of type {typeof(T).Name}");
         return (T)node;
+    }
+    public static T GetNodeSafe<T>(this Node root, string path) where T : Node
+    {
+        return root.GetNodeSafe<T>(path, $"Could not find node: {path}");
     }
     public class GDProperty
     {
@@ -285,19 +290,51 @@ public static partial class Utils
     {
         Dictionary<string, (Func<object> getter, Action<object> setter, Func<bool> predicate, GDProperty prop)> ExtendedProperties {get; set;}
         List<string> ExtendedPropertiesOrdered {get; set;}
-        
+        void LoadProperties();
+        void EnsureNotNull()
+        {
+            if(ExtendedProperties == null)
+                ExtendedProperties = new Dictionary<string, (Func<object> getter, Action<object> setter, Func<bool> predicate, GDProperty prop)>();
+            if(ExtendedPropertiesOrdered == null)
+                ExtendedPropertiesOrdered = new List<string>();
+        }
+        void ReloadProperties()
+        {
+            #if DEBUG_EXTENDED_PROPERTIES
+            GD.Print("Reloading");
+            #endif
+            EnsureNotNull();
+            ClearProperties();
+            LoadProperties();
+        }
         bool OnGet(string property, out object ret)
         {
+            if(!IsValid())
+                ReloadProperties();
+            Assert(IsValid());
             if(ExtendedProperties.ContainsKey(property))
             {
                 ret = ExtendedProperties[property].getter();
+                #if DEBUG_EXTENDED_PROPERTIES
+                GD.Print("GET "+ property + " = " + ((ret == null) ? "NULL" : ret.ToString()));
+                #endif
                 return true;
             }
             ret = null;
+            
+            #if DEBUG_EXTENDED_PROPERTIES
+            GD.Print("GET "+ property + " = NULL");
+            #endif
             return false;
         }
         bool OnSet(string property, object value)
         {
+            if(!IsValid() || !ExtendedProperties.ContainsKey(property))
+                ReloadProperties();
+            Assert(IsValid());
+            #if DEBUG_EXTENDED_PROPERTIES
+            GD.Print("SET "+ property + " = " + ((value == null) ? "NULL" : value.ToString()));
+            #endif
             if(ExtendedProperties.ContainsKey(property))
             {
                 ExtendedProperties[property].setter(value);
@@ -305,18 +342,19 @@ public static partial class Utils
             }
             return false;
         }
+        bool IsValid()
+        {
+            EnsureNotNull();
+            return ExtendedProperties.Count == ExtendedPropertiesOrdered.Count &&
+                   ExtendedPropertiesOrdered.All(it => ExtendedProperties.ContainsKey(it)) &&
+                   ExtendedProperties.All(it => ExtendedPropertiesOrdered.Contains(it.Key));
+        }
         Godot.Collections.Array OnGetPropertyList()
         {
+            if(!IsValid())
+                ReloadProperties();
+            Assert(IsValid());
             var ret = new Godot.Collections.Array();
-            GD.Print("----------------");
-            foreach(var k in ExtendedPropertiesOrdered)
-            {
-                GD.Print("!" + k);
-            }
-            foreach(var kv in ExtendedProperties)
-            {
-                GD.Print("@" + kv.Key);
-            }
             foreach(var k in ExtendedPropertiesOrdered)
             {
                 if(ExtendedProperties[k].predicate())
@@ -326,6 +364,7 @@ public static partial class Utils
         }
         void AddProperty(GDProperty prop, Func<object> getter, Action<object> setter, Func<bool> predicate = null)
         {
+            EnsureNotNull();
             if(predicate == null)
                 predicate = () => true;
             Assert(!ExtendedProperties.ContainsKey(prop.Name), "Property already present!");
@@ -334,13 +373,22 @@ public static partial class Utils
         }
         void RemoveProperty(string name, bool ignoremissing = false)
         {
+            EnsureNotNull();
             if(!ExtendedProperties.ContainsKey(name))
             {
                 Assert(ignoremissing, $"Extended property '{name}' was not found!");
+                if(ExtendedPropertiesOrdered.Contains(name))
+                    ExtendedPropertiesOrdered.Remove(name);
                 return;
             }
             ExtendedPropertiesOrdered.Remove(name);
             ExtendedProperties.Remove(name);
+        }
+        void ClearProperties()
+        {
+            EnsureNotNull();
+            ExtendedPropertiesOrdered.Clear();
+            ExtendedProperties.Clear();
         }
 
     }

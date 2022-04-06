@@ -17,17 +17,21 @@ using static Utils;
 
 public static class Constants
 {
-    public const string TILE_DIRECTORY = "res://Data/Tiles";
-    public const string TILESET_DIRECTORY = "res://Data/Tilesets";
+    public static class DataPaths
+    {
+        public const string TILE_DIRECTORY = "res://Data/Tiles";
+        public const string TILESET_DIRECTORY = "res://Data/Tilesets";
 
-    public const string TILE_MODEL_DIRECTORY = "res://Models/Tiles";
-    public const string PLAYER_THEMES_DIRECTORY = "res://Themes/PlayerThemes";
-    public const string DEFAULT_PLAYER_AVATAR_PATH = "res://Icons/Themable/PlayerAvatars/DefaultAvatar.png";
-    public const string DEFAULT_PLAYER_ICON_PATH = "res://Icons/Themable/PlayerIcons/DefaultIcon.png";
-    public const string DEFAULT_PLAYER_THEME_PATH = PLAYER_THEMES_DIRECTORY + "/DefaultTheme.json";
-    public const string THEMEABLE_ICONS_DIRECTORY = "res://Icons/Themeable";
+        public const string TILE_MODEL_DIRECTORY = "res://Models/Tiles";
+        public const string PLAYER_THEMES_DIRECTORY = "res://Themes/PlayerThemes";
+        public const string DEFAULT_PLAYER_AVATAR_PATH = "res://Icons/Themable/PlayerAvatars/DefaultAvatar.png";
+        public const string DEFAULT_PLAYER_ICON_PATH = "res://Icons/Themable/PlayerIcons/DefaultIcon.png";
+        public const string DEFAULT_PLAYER_THEME_PATH = PLAYER_THEMES_DIRECTORY + "/DefaultTheme.json";
+        public const string THEMEABLE_ICONS_DIRECTORY = "res://Icons/Themeable";
+        public const string SETTINGS_PATH = "user://settings.json"; 
+    }
 
-    public static class AsserPaths
+    public static class AssetPaths
     {
         public const string BANNER_PROP_SHADER = "res://Props/PropBanner.gdshader";
     }
@@ -42,6 +46,7 @@ public static class Constants
             public const string SHADER_SECONDARY_ENABLED = "secondary_enabled";
             public const string SHADER_TERTIARY_ENABLED = "tertiary_enabled";
             public const string SHADER_ICON_ENABLED_THEME_SETTER = "icon_enabled";
+            public const string SHADER_ICON_CENTERED = "icon_centered";
             public const string SHADER_ICON_TEXTURE_THEME_SETTER = "icon_texture";
             public const string SHADER_ICON_SCALE_THEME_SETTER = "icon_scale";
             public const string SHADER_ICON_OFFSET_THEME_SETTER = "icon_offset";
@@ -50,10 +55,10 @@ public static class Constants
             public const string SHADER_BILLBOARD_ENABLED = "billboard_enabled";
             public const string SHADER_TEXTURE_ENABLED = "texture_enabled";
             public const string SHADER_BACKGROUND_OPACITY = "background_alpha";
+            public const string SHADER_SPRITE_ARRAY = "sprite_array";
+            public const string SHADER_SPRITE_INDEX = "sprite_index";
         }
     }
-
-    public const string SETTINGS_PATH = "user://settings.json"; 
 
     public const float TILE_HEIGHT = 0.10f;
     public const float TILE_SIDE_LENGTH = 1.0f;
