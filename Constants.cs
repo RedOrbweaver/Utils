@@ -24,8 +24,8 @@ public static class Constants
 
         public const string TILE_MODEL_DIRECTORY = "res://Models/Tiles";
         public const string PLAYER_THEMES_DIRECTORY = "res://Themes/PlayerThemes";
-        public const string DEFAULT_PLAYER_AVATAR_PATH = "res://Icons/Themable/PlayerAvatars/DefaultAvatar.png";
-        public const string DEFAULT_PLAYER_ICON_PATH = "res://Icons/Themable/PlayerIcons/DefaultIcon.png";
+        public const string DEFAULT_PLAYER_AVATAR_PATH = "res://Icons/Themeable/PlayerAvatars/DefaultAvatar.png";
+        public const string DEFAULT_PLAYER_ICON_PATH = "res://Icons/Themeable/PlayerIcons/DefaultIcon.png";
         public const string DEFAULT_PLAYER_THEME_PATH = PLAYER_THEMES_DIRECTORY + "/DefaultTheme.json";
         public const string THEMEABLE_ICONS_DIRECTORY = "res://Icons/Themeable";
         public const string SETTINGS_PATH = "user://settings.json"; 
@@ -34,6 +34,7 @@ public static class Constants
     public static class AssetPaths
     {
         public const string BANNER_PROP_SHADER = "res://Props/PropBanner.gdshader";
+        public const string SPRITE2D_PROP_SHADER = "res://Props/Sprite2DProp.gdshader";
     }
     public static class ShaderParams
     {

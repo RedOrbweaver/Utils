@@ -1,4 +1,4 @@
-﻿#define DEBUG_EXTENDED_PROPERTIES
+﻿//#define DEBUG_EXTENDED_PROPERTIES
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -113,7 +113,7 @@ public static partial class Utils
     {
         return new Directory().DirExists(path);
     }
-    public static List<T> GetChildrenRecrusively<T>(Node root, bool restrichtomatchingparents = false) where T : Node
+    public static List<T> GetChildrenRecrusively<T>(this Node root, bool restrichtomatchingparents = false)
     {
         List<T> ret = new List<T>(8);
 
@@ -220,10 +220,26 @@ public static partial class Utils
     {
         foreach (var it in parent.GetChildren())
         {
-            if (it.GetType() == typeof(T))
+            if (it.GetType() == typeof(T) || it is T)
                 return (T)it;
         }
         return default(T);
+    }
+    public static List<T> FindChildren<T>(this Node parent, bool recursive = false) 
+    {   
+        var ret = new List<T>();
+        if(recursive)
+            return FindChildrenRecursively<T>(parent);
+        foreach(var it in parent.GetChildren())
+        {
+            if(it is T || it.GetType() == typeof(T))
+                ret.Add((T)it);
+        }
+        return ret;
+    }
+    public static List<T> FindChildrenRecursively<T>(this Node parent) 
+    {
+        return GetChildrenRecrusively<T>(parent);
     }
     public static T GetNodeSafe<T>(this Node root, string path, string not_found_message) where T : Node
     {
