@@ -21,9 +21,11 @@ public static partial class Utils
     public class SignalHandlerObject : Godot.Object
     {
         public SignalHandler handler;
-        public void Grabber(params object[] args)
+        //public void Grabber(params object[] args)
+        public void Grabber()
         {
-            handler(args.Cast<object>().ToArray<object>());
+            //handler(args.Cast<object>().ToArray<object>());
+            handler();
         }
         public SignalHandlerObject(SignalHandler handler)
         {

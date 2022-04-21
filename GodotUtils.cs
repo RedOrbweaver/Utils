@@ -419,5 +419,41 @@ public static partial class Utils
             return $"{node.GetType().Name} ({node.Name})";
         return obj.GetType().Name;
     }
+    [System.AttributeUsage(System.AttributeTargets.Property)]
+    public class LoadFrom : System.Attribute
+    {
+        static int _registered = 0;
+        public string Path;
+        public static List<(string path, Action<Resource> onend)> _toLoad;
+        public static List<(string path, Action<Resource> onend)> ToLoad
+        {
+            get
+            {
+                if(_toLoad == null || _toLoad.Count != _registered)
+                {
+                    _toLoad = new List<(string path, Action<Resource> onend)>();
+                    var props = FindAllPropertiesWithAttribute<LoadFrom>();
+                    foreach(var it in props)
+                    {
+                        var attr = it.GetCustomAttribute<LoadFrom>();
+                        Assert(attr != null);
+                        var path = attr.Path;
+                        var setter = it.GetSetMethod(true);
+                        Assert(setter.IsStatic, "All LoadFrom subscribers should be static!");
+                        Action<Resource> act = res => setter.Invoke(null, new object[]{res});
+                        _toLoad.Add((path, act));
+                    }
+                    _registered = _toLoad.Count;
+                }
+                return _toLoad;
+            }
+        }
+        public LoadFrom(string path)
+        {
+            Assert(FileExists(path), "could not find resource: " + path);
+            this.Path = path;
+            _registered++;
+        }
+    }
 #endif
 }

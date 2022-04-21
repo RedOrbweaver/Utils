@@ -138,24 +138,28 @@ public static partial class Utils
             System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
     [Conditional("DEBUG")]
-    public static void Assert(bool b, string msg)
+    public static void Assert(bool b, string msg, 
+        [CallerLineNumber] int sourceLineNumber = 0, [CallerMemberName] string memberName = "", 
+        [CallerFilePath] string sourceFilePath = "")
     {
         if (b)
             return;
+        string topmsg = $"ASSERTION FAILURE ({sourceFilePath}:{sourceLineNumber}<-{memberName}):";
 #if GODOT
-        GD.PrintErr("ASSERTION FAILURE:");
+        GD.PrintErr(topmsg);
         GD.PrintErr(msg);
 #else
-        Console.WriteLine("ASSERTION FAILURE:");
+        Console.WriteLine(topmsg);
         Console.WriteLine(msg);
 #endif
         //Debugger.Break();
         throw new AssertionFailureException(msg);
     }
     [Conditional("DEBUG")]
-    public static void Assert(bool b)
+    public static void Assert(bool b, [CallerLineNumber] int sourceLineNumber = 0,
+        [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "")
     {
-        Assert(b, "An unspecified assertion failure has been triggered!");
+        Assert(b, "An unspecified assertion failure has been triggered!", sourceLineNumber, memberName, sourceFilePath);
     }
     [Conditional("DEBUG")]
     public static void AssertNot(bool b, string msg)
@@ -319,5 +323,21 @@ public static partial class Utils
             this.Capacity = capacity;
             this.queue = new Queue<T>(capacity);
         }
+    }
+    public static List<PropertyInfo> FindAllPropertiesWithAttribute<T>() where T : Attribute
+    {
+        List<PropertyInfo> ret = new List<PropertyInfo>();
+        foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
+        {
+            // Check each method for the attribute.
+            var props = type.GetProperties(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public).ToList();
+            //props.AddRange(type.GetRuntimeProperties());
+            foreach (var property in props)
+            {
+                if(property.GetCustomAttribute<T>() != null)
+                    ret.Add(property);
+            }
+        }
+        return ret;
     }
 }
