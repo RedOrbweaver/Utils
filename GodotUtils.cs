@@ -243,7 +243,7 @@ public static partial class Utils
     }
     public static T GetNodeSafe<T>(this Node root, string path, string not_found_message) where T : Node
     {
-        Node node = root.GetNode(path);
+        Node node = root.GetNodeOrNull(path);
         Assert<Exception>(node != null, not_found_message);
         Assert(node is T, $"Node {path} was not of type {typeof(T).Name}");
         return (T)node;
@@ -406,7 +406,18 @@ public static partial class Utils
             ExtendedPropertiesOrdered.Clear();
             ExtendedProperties.Clear();
         }
-
+    }
+    public static string GetObjectName(this Godot.Object obj)
+    {
+        if(obj is Node node)
+            return node.Name;
+        return obj.GetType().Name;
+    }
+    public static string GetObjectTypeAndName(this Godot.Object obj)
+    {
+        if(obj is Node node)
+            return $"{node.GetType().Name} ({node.Name})";
+        return obj.GetType().Name;
     }
 #endif
 }
