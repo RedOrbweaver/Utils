@@ -21,11 +21,70 @@ public static partial class Utils
     public class SignalHandlerObject : Godot.Object
     {
         public SignalHandler handler;
-        //public void Grabber(params object[] args)
         public void Grabber()
         {
-            //handler(args.Cast<object>().ToArray<object>());
             handler();
+        }
+        public void Grabber(object arg0)
+        {
+            handler(arg0);
+        }
+        public void Grabber(object arg0, object arg1)
+        {
+            handler(arg0, arg1);
+        }
+        public void Grabber(object arg0, object arg1, object arg2)
+        {
+            handler(arg0, arg1, arg2);
+        }
+        public void Grabber(object arg0, object arg1, object arg2, object arg3)
+        {
+            handler(arg0, arg1, arg2, arg3);
+        }
+        public void Grabber(object arg0, object arg1, object arg2, object arg3, object arg4)
+        {
+            handler(arg0, arg1, arg2, arg3, arg4);
+        }
+        public void Grabber(object arg0, object arg1, object arg2, object arg3, object arg4, object arg5)
+        {
+            handler(arg0, arg1, arg2, arg3, arg4, arg5);
+        }
+        public void Grabber(string arg0)
+        {
+            handler(arg0);
+        }
+        public void Grabber(float arg0)
+        {
+            handler(arg0);
+        }
+        public void Grabber(bool arg0)
+        {
+            handler(arg0);
+        }
+        public void Grabber(int arg0)
+        {
+            handler(arg0);
+        }
+        public void Grabber(long arg0)
+        {
+            handler(arg0);
+        }
+        public void Grabber(Vector2 arg0)
+        {
+            handler(arg0);
+        }
+        public void Grabber(Vector3 arg0)
+        {
+            handler(arg0);
+        }
+        public void Grabber(Godot.Collections.Array args)
+        {
+            object[] oargs = new object[args.Count];
+            for(int i = 0; i < args.Count; i++)
+            {
+                oargs[i] = args[i];
+            }
+            handler(oargs);
         }
         public SignalHandlerObject(SignalHandler handler)
         {
@@ -140,11 +199,21 @@ public static partial class Utils
     }
     public static ConnectionHandle OnToggled(this CheckBox obj, Action<bool> func)
     {
-        return Connect(obj, "toggled", (args) => func(GetElementOrDefault<bool>(args, 0)));
+        return Connect(obj, "toggled", (args) =>
+        {
+            Assert(args.Length == 1, "Invalid number of arguments");
+            Assert(args[0] is bool, $"Invalid argument type: {args[0]}");
+            func((bool)args[0]);
+        });
     }
     public static ConnectionHandle OnValueChanged(this Slider obj, Action<float> func)
     {
-        return Connect(obj, "value_changed", (args) => func(GetElementOrDefault<float>(args, 0)));
+        return Connect(obj, "value_changed", (args) =>
+        {
+            Assert(args.Length == 1, "Invalid number of arguments");
+            Assert(args[0] is float, $"Invalid argument type: {args[0]}");
+            func((float)args[0]);
+        });
     }
     public static ConnectionHandle OnMouseEntered(this Area obj, Action func)
     {
@@ -157,11 +226,21 @@ public static partial class Utils
 
     public static ConnectionHandle OnFileSelected(this FileDialog dialog, Action<string> func)
     {
-        return Connect(dialog, "file_selected", (args) => func(GetElementOrDefault<string>(args, 0)));
+        return Connect(dialog, "file_selected", (args) =>
+        {
+            Assert(args.Length == 1, "Invalid number of arguments");
+            Assert(args[0] is string, $"Invalid argument type: {args[0]}");
+            func((string)args[0]);
+        });
     }
     public static ConnectionHandle OnDirectorySelected(this FileDialog dialog, Action<string> func)
     {
-        return Connect(dialog, "dir_selected", (args) => func(GetElementOrDefault<string>(args, 0)));
+        return Connect(dialog, "dir_selected", (args) =>
+        {
+            Assert(args.Length == 1, "Invalid number of arguments");
+            Assert(args[0] is string, $"Invalid argument type: {args[0]}");
+            func((string)args[0]);
+        });
     }
 }
 

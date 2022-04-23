@@ -56,6 +56,7 @@ public static class Constants
             public const string SHADER_BILLBOARD_ENABLED = "billboard_enabled";
             public const string SHADER_TEXTURE_ENABLED = "texture_enabled";
             public const string SHADER_BACKGROUND_OPACITY = "background_alpha";
+            public const string SHADER_BACKGROUND_COLOR = "background_color";
             public const string SHADER_SPRITE_ARRAY = "sprite_array";
             public const string SHADER_SPRITE_INDEX = "sprite_index";
         }
