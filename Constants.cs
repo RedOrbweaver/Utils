@@ -47,6 +47,7 @@ public static class Constants
             public const string SHADER_SECONDARY_ENABLED = "secondary_enabled";
             public const string SHADER_TERTIARY_ENABLED = "tertiary_enabled";
             public const string SHADER_ICON_ENABLED_THEME_SETTER = "icon_enabled";
+            public const string SHADER_ICON_TRANSFORM = "icon_transform";
             public const string SHADER_ICON_CENTERED = "icon_centered";
             public const string SHADER_ICON_TEXTURE_THEME_SETTER = "icon_texture";
             public const string SHADER_ICON_SCALE_THEME_SETTER = "icon_scale";
