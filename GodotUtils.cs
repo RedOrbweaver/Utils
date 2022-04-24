@@ -60,13 +60,12 @@ public static partial class Utils
         }
         return dif;
     }
-    public static T DeserializeFromFile<T>(string path, bool returnnullonfail = false) where T : class
+    public static T DeserializeFromString<T>(string data, bool returnnullonfail = false) where T : class
     {
-        Assert(FileExists(path));
         T o = null;
         try
         {
-            o = JsonConvert.DeserializeObject<T>(ReadFile(path));
+            o = JsonConvert.DeserializeObject<T>(data);
         }
         catch (Exception)
         {
@@ -80,11 +79,20 @@ public static partial class Utils
 
         return o;
     }
+    public static T DeserializeFromFile<T>(string path, bool returnnullonfail = false) where T : class
+    {
+        Assert(FileExists(path));
+        return DeserializeFromString<T>(ReadFile(path));
+    }
+    public static string SerializeToString<T>(T o) where T : class
+    {
+        return JsonConvert.SerializeObject(o);
+    }
     public static void SerializeToFile<T>(string path, T o) where T : class
     {
         Assert(o != null);
 
-        var data = JsonConvert.SerializeObject(o);
+        var data = SerializeToString<T>(o);
         WriteFile(path, data);
     }
     public static bool FileExists(string path)
@@ -244,7 +252,7 @@ public static partial class Utils
     public static T GetNodeSafe<T>(this Node root, string path, string not_found_message) where T : Node
     {
         Node node = root.GetNodeOrNull(path);
-        Assert<Exception>(node != null, not_found_message);
+        Assert(node != null, not_found_message);
         Assert(node is T, $"Node {path} was not of type {typeof(T).Name}");
         return (T)node;
     }
