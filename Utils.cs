@@ -340,4 +340,8 @@ public static partial class Utils
         }
         return ret;
     }
+    // Returns a value copy of v.
+    public static T CloneStruct<T>(T v) where T : struct => v;
+    // Returns a value copy of v.
+    public static T Clone<T>(this T v) where T : struct => CloneStruct(v);
 }

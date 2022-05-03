@@ -84,15 +84,15 @@ public static partial class Utils
         Assert(FileExists(path));
         return DeserializeFromString<T>(ReadFile(path));
     }
-    public static string SerializeToString<T>(T o) where T : class
+    public static string SerializeToString<T>(T o, bool humanreadible = false) where T : class
     {
-        return JsonConvert.SerializeObject(o);
+        return JsonConvert.SerializeObject(o, (humanreadible)? Formatting.Indented : Formatting.None);
     }
-    public static void SerializeToFile<T>(string path, T o) where T : class
+    public static void SerializeToFile<T>(string path, T o, bool humanreadible = false) where T : class
     {
         Assert(o != null);
 
-        var data = SerializeToString<T>(o);
+        var data = SerializeToString<T>(o, humanreadible);
         WriteFile(path, data);
     }
     public static bool FileExists(string path)

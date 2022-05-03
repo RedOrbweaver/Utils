@@ -29,6 +29,7 @@ public static class Constants
         public const string DEFAULT_PLAYER_THEME_PATH = PLAYER_THEMES_DIRECTORY + "/DefaultTheme.json";
         public const string THEMEABLE_ICONS_DIRECTORY = "res://Icons/Themeable";
         public const string SETTINGS_PATH = "user://settings.json"; 
+        public const string STATISTICS_PATH = "user://Statistics";
     }
 
     public static class AssetPaths
@@ -62,6 +63,7 @@ public static class Constants
             public const string SHADER_SPRITE_INDEX = "sprite_index";
         }
     }
+    public const bool AUTO_SAVE_STATISTICS = true;
     public const float MINIMUM_AI_DELAY_S = 0.5f;
     public const float TILE_HEIGHT = 0.10f;
     public const float TILE_SIDE_LENGTH = 1.0f;
