@@ -111,7 +111,7 @@ public static partial class Utils
     public static void WriteFile(string path, string data)
     {
         Assert(data != null);
-
+        Console.WriteLine("Writing to: " + path);
         File fm = new File();
         Assert(fm.Open(path, File.ModeFlags.Write));
         fm.StoreString(data);
@@ -144,20 +144,17 @@ public static partial class Utils
 
         return ret;
     }
-    [Conditional("DEBUG")]
-    public static void Assert(Error b, string msg)
+    public static void Assert(Error b, string msg, [CallerLineNumber] int sourceLineNumber = 0,
+        [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "")
     {
         if (b == Error.Ok)
             return;
-        GD.PrintErr($"ASSERTION FAILURE (Error.{b.ToString()}):");
-        GD.PrintErr(msg);
-        //Debugger.Break();
-        throw new AssertionFailureException(msg);
+        DebugAssert(true, $"ASSERTION FAILURE (Error.{b.ToString()}): \n" + msg, sourceFilePath, sourceLineNumber, memberName);
     }
-    [Conditional("DEBUG")]
-    public static void Assert(Error b)
+    public static void Assert(Error b, [CallerLineNumber] int sourceLineNumber = 0,
+        [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "")
     {
-        Assert(b, $"An unspecified assertion failure, error code {b.ToString()}, has been triggered!");
+        Assert(b, $"An unspecified assertion failure, error code {b.ToString()}, has been triggered!", sourceLineNumber, memberName, sourceFilePath);
     }
     public static List<string> ListDirectoryFilesRecursively(string path, Func<string, bool> filter)
     {

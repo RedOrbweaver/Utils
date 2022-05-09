@@ -138,9 +138,7 @@ public static partial class Utils
             System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
     [Conditional("DEBUG")]
-    public static void Assert(bool b, string msg, 
-        [CallerLineNumber] int sourceLineNumber = 0, [CallerMemberName] string memberName = "", 
-        [CallerFilePath] string sourceFilePath = "")
+    static void DebugAssert(bool b, string msg, string sourceFilePath, int sourceLineNumber, string memberName)
     {
         if (b)
             return;
@@ -155,18 +153,21 @@ public static partial class Utils
         //Debugger.Break();
         throw new AssertionFailureException(msg);
     }
-    [Conditional("DEBUG")]
+    public static void Assert(bool b, string msg, 
+        [CallerLineNumber] int sourceLineNumber = 0, [CallerMemberName] string memberName = "", 
+        [CallerFilePath] string sourceFilePath = "")
+    {
+        DebugAssert(b, msg, sourceFilePath, sourceLineNumber, memberName);
+    }
     public static void Assert(bool b, [CallerLineNumber] int sourceLineNumber = 0,
         [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "")
     {
         Assert(b, "An unspecified assertion failure has been triggered!", sourceLineNumber, memberName, sourceFilePath);
     }
-    [Conditional("DEBUG")]
     public static void AssertNot(bool b, string msg)
     {
         Assert(!b, msg);
     }
-    [Conditional("DEBUG")]
     public static void AssertNot(bool b)
     {
         Assert(!b);
