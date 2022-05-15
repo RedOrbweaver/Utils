@@ -25,6 +25,7 @@ using Godot;
 #endif
 using static System.Math;
 using Expression = System.Linq.Expressions.Expression;
+using System.Threading.Tasks;
 
 public static partial class Utils
 {
@@ -345,4 +346,26 @@ public static partial class Utils
     public static T CloneStruct<T>(T v) where T : struct => v;
     // Returns a value copy of v.
     public static T Clone<T>(this T v) where T : struct => CloneStruct(v);
+    public static async void QueueUserWorkItemAsync(Action act)
+    {
+        SemaphoreSlim ss = new SemaphoreSlim(0, 1);
+        ThreadPool.QueueUserWorkItem(o => 
+        {
+            act();
+            ss.Release();
+        });
+        await ss.WaitAsync();
+    }
+    public static async Task<T> QueueUserWorkItemAsync<T>(Func<T> func)
+    {
+        SemaphoreSlim ss = new SemaphoreSlim(0, 1);
+        T ret = default(T);
+        ThreadPool.QueueUserWorkItem(o => 
+        {
+            ret = func();
+            ss.Release();
+        });
+        await ss.WaitAsync();
+        return ret;
+    }
 }

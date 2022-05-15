@@ -1,3 +1,4 @@
+#if GODOT
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -39,3 +40,4 @@ public class GlobalUtilsScript : Node
         GUS = this;
     }
 }
+#endif
