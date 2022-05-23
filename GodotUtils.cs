@@ -460,5 +460,10 @@ public static partial class Utils
             _registered++;
         }
     }
+    public static void Delay(float seconds, Action act)
+    {
+        var timer = GlobalUtilsScript.GUS.GetTree().CreateTimer(seconds);
+        Utils.Connect(timer, "timeout", os => act());
+    }
 #endif
 }
