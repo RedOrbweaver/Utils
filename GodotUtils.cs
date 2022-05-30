@@ -465,5 +465,24 @@ public static partial class Utils
         var timer = GlobalUtilsScript.GUS.GetTree().CreateTimer(seconds);
         Utils.Connect(timer, "timeout", os => act());
     }
+    public static bool HasParent(this Node node)
+    {
+        return node.GetParent() != null;
+    }
+    public static bool LoseParent(this Node node)
+    {
+        if(node.GetParent() is Node parent)
+        {
+            parent.RemoveChild(node);
+            return true;
+        }
+        return false;
+    }
+    public static void StealChild(this Node node, Node other)
+    {
+        if(other.GetParent() is Node parent)
+            parent.RemoveChild(other);
+        node.AddChild(other);
+    }
 #endif
 }
