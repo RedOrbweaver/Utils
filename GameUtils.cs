@@ -56,5 +56,35 @@ public static partial class Utils
         GlobalUtilsScript.GUS.QueueDeferred(action);
     }
     public static void Defer(Action action) => CallDeferred(action);
+        public static Godot.Color GetPlaceableColor(object tp)
+        {
+            if(tp is Carcassonne.NodeType ntp)
+            {
+                return GetNodeTypeColor(ntp);
+            }
+            else if(tp is Carcassonne.TileAttributeType atp)
+            {
+                return GetAttributeTypeColor(atp);
+            }
+            throw new Exception($"{tp} is not a valid placeable");
+        }
+        public static Godot.Color GetNodeTypeColor(Carcassonne.NodeType tp)
+        {
+            return tp switch
+            {
+                Carcassonne.NodeType.FARM => Constants.Colors.FarmColor,
+                Carcassonne.NodeType.ROAD => Constants.Colors.RoadColor,
+                Carcassonne.NodeType.CITY => Constants.Colors.CityColor,
+                _ => throw new Exception($"Unsupported node type: {tp}")
+            };
+        }
+        public static Godot.Color GetAttributeTypeColor(Carcassonne.TileAttributeType tp)
+        {
+            return tp switch
+            {
+                Carcassonne.TileAttributeType.MONASTERY => Constants.Colors.MonasteryColor,
+                _ => throw new Exception($"Unsupported attribute type: {tp}")
+            };
+        }
 }
 #endif

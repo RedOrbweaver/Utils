@@ -37,6 +37,13 @@ public static class Constants
         public const string BANNER_PROP_SHADER = "res://Props/PropBanner.gdshader";
         public const string SPRITE2D_PROP_SHADER = "res://Props/Sprite2DProp.gdshader";
     }
+    public static class Colors
+    {
+        public static Godot.Color RoadColor { get; } = new Godot.Color(0.9f, 0.9f, 0.05f);
+        public static Godot.Color FarmColor { get; } = new Godot.Color(0.3f, 0.95f, 0.3f);
+        public static Godot.Color CityColor { get; } = new Godot.Color(0.4f, 0.4f, 0.1f);
+        public static Godot.Color MonasteryColor { get; } = new Godot.Color(0.4f, 0.4f, 0f);
+    }
     public static class ShaderParams
     {
         public static class ThemableShader
