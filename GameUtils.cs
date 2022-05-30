@@ -56,35 +56,62 @@ public static partial class Utils
         GlobalUtilsScript.GUS.QueueDeferred(action);
     }
     public static void Defer(Action action) => CallDeferred(action);
-        public static Godot.Color GetPlaceableColor(object tp)
+    public static Godot.Color GetPlaceableColor(object tp)
+    {
+        if(tp is Carcassonne.NodeType ntp)
         {
-            if(tp is Carcassonne.NodeType ntp)
-            {
-                return GetNodeTypeColor(ntp);
-            }
-            else if(tp is Carcassonne.TileAttributeType atp)
-            {
-                return GetAttributeTypeColor(atp);
-            }
-            throw new Exception($"{tp} is not a valid placeable");
+            return GetNodeTypeColor(ntp);
         }
-        public static Godot.Color GetNodeTypeColor(Carcassonne.NodeType tp)
+        else if(tp is Carcassonne.TileAttributeType atp)
         {
-            return tp switch
-            {
-                Carcassonne.NodeType.FARM => Constants.Colors.FarmColor,
-                Carcassonne.NodeType.ROAD => Constants.Colors.RoadColor,
-                Carcassonne.NodeType.CITY => Constants.Colors.CityColor,
-                _ => throw new Exception($"Unsupported node type: {tp}")
-            };
+            return GetAttributeTypeColor(atp);
         }
-        public static Godot.Color GetAttributeTypeColor(Carcassonne.TileAttributeType tp)
+        throw new Exception($"{tp} is not a valid placeable");
+    }
+    public static Godot.Color GetNodeTypeColor(Carcassonne.NodeType tp)
+    {
+        return tp switch
         {
-            return tp switch
-            {
-                Carcassonne.TileAttributeType.MONASTERY => Constants.Colors.MonasteryColor,
-                _ => throw new Exception($"Unsupported attribute type: {tp}")
-            };
+            Carcassonne.NodeType.FARM => Constants.Colors.FarmColor,
+            Carcassonne.NodeType.ROAD => Constants.Colors.RoadColor,
+            Carcassonne.NodeType.CITY => Constants.Colors.CityColor,
+            _ => throw new Exception($"Unsupported node type: {tp}")
+        };
+    }
+    public static Godot.Color GetAttributeTypeColor(Carcassonne.TileAttributeType tp)
+    {
+        return tp switch
+        {
+            Carcassonne.TileAttributeType.MONASTERY => Constants.Colors.MonasteryColor,
+            _ => throw new Exception($"Unsupported attribute type: {tp}")
+        };
+    }
+    public class EmissionCurve
+    {
+        float _factor, _speed, _min, _max;
+        float dt = 0.0f;
+        float offset;
+        public float Next(float delta)
+        {
+            Assert(_factor <= 1.0);
+            Assert(_min < _max);
+            dt += _speed;
+            dt %= 2.0f;
+            float rdt = dt - 1.0f;
+            float v = (Mathf.Pow(Abs(rdt), _factor));
+            v = 1.0f - v;
+            v = (v + offset) % 1.0f;
+            v = _min + v * (_max-_min);
+            return v;
         }
+        public EmissionCurve(float factor, float speed, float min, float max)
+        {
+            this._factor = factor;
+            this._speed = speed;
+            this._max = max;
+            this._min = min;
+            offset = new RNG().NextFloat();;
+        }
+    }
 }
 #endif
