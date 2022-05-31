@@ -30,6 +30,18 @@ public static class Constants
         public const string THEMEABLE_ICONS_DIRECTORY = "res://Icons/Themeable";
         public const string SETTINGS_PATH = "user://settings.json"; 
         public const string STATISTICS_PATH = "user://Statistics";
+
+        public const string SAVES_BASE_PATH = "user://Saves";
+        public const string SAVES_LOCAL_PATH = SAVES_BASE_PATH + "/Local";
+        public const string SAVES_MULTIPLAYER_PATH = SAVES_BASE_PATH + "/Multiplayer";
+
+        public const string SAVE_ENGINE_FILE = "STATE";
+        public const string SAVE_NAME_FILE = "NAME";
+        public const string SAVE_RNG_FILE = "RNG";
+        public const string SAVE_EXTRA_FILE = "GAME";
+        public const string SAVE_AGENTS_SUBFOLDER = "AGENTS";
+
+        public const string TEMPORATY_FILE_PATH = "user://Temp";
     }
 
     public static class AssetPaths

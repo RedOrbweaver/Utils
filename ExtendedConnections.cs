@@ -193,11 +193,11 @@ public static partial class Utils
             return default(T);
         return (T)v;
     }
-    public static ConnectionHandle OnButtonPressed(this Button obj, Action func)
+    public static ConnectionHandle OnButtonPressed(this BaseButton obj, Action func)
     {
         return Connect(obj, "pressed", (args) => func());
     }
-    public static ConnectionHandle OnToggled(this CheckBox obj, Action<bool> func)
+    public static ConnectionHandle OnToggled(this BaseButton obj, Action<bool> func)
     {
         return Connect(obj, "toggled", (args) =>
         {
@@ -241,6 +241,44 @@ public static partial class Utils
             Assert(args[0] is string, $"Invalid argument type: {args[0]}");
             func((string)args[0]);
         });
+    }
+    public static ConnectionHandle OnAccepted(this AcceptDialog dialog, Action func)
+    {
+        return Connect(dialog, "confirmed", (args) => func());
+    }
+    public static ConnectionHandle OnConfirmed(this AcceptDialog dialog, Action func)
+    {
+        return Connect(dialog, "confirmed", (args) => func());
+    }
+    public static ConnectionHandle OnConfirmed(this ConfirmationDialog dialog, Action func)
+    {
+        return Connect(dialog, "confirmed", (args) => func());
+    }
+    public static ConnectionHandle OnCancelled(this ConfirmationDialog dialog, Action func)
+    {
+        return dialog.GetCancel().OnButtonPressed(func);
+    }
+
+    public static ConnectionHandle OnItemActivated(this ItemList list, Action<int> func)
+    {
+        return Connect(list, "item_activated", (args) => func((int)args[0]));
+    }
+    public static ConnectionHandle OnItemSelected(this ItemList list, Action<int> func)
+    {
+        return Connect(list, "item_selected", (args) => func((int)args[0]));
+    }
+    public static ConnectionHandle OnNothingSelected(this ItemList list, Action func)
+    {
+        return Connect(list, "nothing_selected", (args) => func());
+    }
+
+    public static ConnectionHandle OnTextChanged(this LineEdit edit, Action<string> func)
+    {
+        return Connect(edit, "text_changed", (args) => func((string)args[0]));
+    }
+    public static ConnectionHandle OnTextSubmitted(this LineEdit edit, Action<string> func)
+    {
+        return Connect(edit, "text_entered", (args) => func((string)args[0]));
     }
 }
 

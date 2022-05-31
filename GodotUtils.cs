@@ -17,6 +17,7 @@ using Godot;
 using Newtonsoft.Json;
 using static System.Math;
 using Expression = System.Linq.Expressions.Expression;
+using Newtonsoft.Json.Serialization;
 
 public static partial class Utils
 {
@@ -62,15 +63,19 @@ public static partial class Utils
     }
     public static T DeserializeFromString<T>(string data, bool returnnullonfail = false) where T : class
     {
+        JsonSerializerSettings settings = new JsonSerializerSettings
+        {
+            TypeNameHandling =  TypeNameHandling.Auto,
+        };
         T o = null;
         try
         {
-            o = JsonConvert.DeserializeObject<T>(data);
+            o = JsonConvert.DeserializeObject<T>(data, settings);
         }
-        catch (Exception)
+        catch (JsonException jex)
         {
             if (!returnnullonfail)
-                throw;
+                throw jex;
             return null;
         }
 
@@ -84,15 +89,34 @@ public static partial class Utils
         Assert(FileExists(path));
         return DeserializeFromString<T>(ReadFile(path));
     }
-    public static string SerializeToString<T>(T o, bool humanreadible = false) where T : class
+    public static string SerializeToString<T>(T o, bool humanreadible = false, bool typedata = true) where T : class
     {
-        return JsonConvert.SerializeObject(o, (humanreadible)? Formatting.Indented : Formatting.None);
+        List<string> errors = new List<string>();
+        void ErrorHandler(object sender, ErrorEventArgs e)
+        {
+            errors.Add(e.ErrorContext.Error.Message);
+            e.ErrorContext.Handled = true;
+        }
+        JsonSerializerSettings settings = new JsonSerializerSettings
+        {
+            TypeNameHandling = (typedata) ? TypeNameHandling.All : TypeNameHandling.None,
+            Formatting = (humanreadible)? Formatting.Indented : Formatting.None,
+            Error = ErrorHandler,
+        };
+        var ret = JsonConvert.SerializeObject(o, settings);
+        if(errors.Count > 0)
+        {
+            string msg = $"{errors.Count} errors during serialization of {o}";
+            Console.WriteLine(msg);
+            throw new Exception(msg);
+        }
+        return ret;
     }
-    public static void SerializeToFile<T>(string path, T o, bool humanreadible = false) where T : class
+    public static void SerializeToFile<T>(string path, T o, bool humanreadible = false, bool typedata = true) where T : class
     {
         Assert(o != null);
 
-        var data = SerializeToString<T>(o, humanreadible);
+        var data = SerializeToString<T>(o, humanreadible, typedata);
         WriteFile(path, data);
     }
     public static bool FileExists(string path)
@@ -126,6 +150,15 @@ public static partial class Utils
         fm.Close();
         return dt;
     }
+    public static byte[] ReadFileBytes(string path)
+    {
+        Assert(FileExists(path));
+        File fm = new File();
+        Assert(fm.Open(path, File.ModeFlags.Read));
+        byte[] dt = fm.GetBuffer((long)fm.GetLen());
+        fm.Close();
+        return dt;
+    }
     public static void WriteFile(string path, string data)
     {
         Assert(data != null);
@@ -133,6 +166,15 @@ public static partial class Utils
         File fm = new File();
         Assert(fm.Open(path, File.ModeFlags.Write));
         fm.StoreString(data);
+        fm.Close();
+    }
+    public static void WriteFile(string path, byte[] data)
+    {
+        Assert(data != null);
+        Console.WriteLine("Writing to: " + path);
+        File fm = new File();
+        Assert(fm.Open(path, File.ModeFlags.Write));
+        fm.StoreBuffer(data);
         fm.Close();
     }
     public static bool DirectoryExists(string path)
@@ -284,6 +326,12 @@ public static partial class Utils
         {
             return new Directory().DirExists(s);
         }, relativepaths, skiphidden);
+    }
+    public static string GetRealUserDirectory(string path)
+    {
+        Assert(path.StartsWith("user://"));
+        var end = path.Replace("user://", "");
+        return ConcatPaths(OS.GetUserDataDir(), end);
     }
 
     public static T FindChild<T>(this Node parent)

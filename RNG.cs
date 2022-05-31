@@ -30,6 +30,7 @@ public static partial class Utils
                 GetBytes((byte*)&ret, 8);
                 return ret;
             }
+            public abstract unsafe string Serialize();
         }
         public class SystemRandom : RNGGenerator
         {
@@ -52,6 +53,10 @@ public static partial class Utils
             public override unsafe ulong GetLong()
             {
                 return (((ulong)rng.Next()) << 32) + ((ulong)rng.Next());
+            }
+            public override unsafe string Serialize()
+            {
+                throw new NotImplementedException();
             }
             void init()
             {
@@ -111,10 +116,18 @@ public static partial class Utils
             {
                 return Generate();
             }
+            public override unsafe string Serialize()
+            {
+                return seed.ToString();
+            }
             public Xorshift64s(ulong seed)
             {
                 Assert(seed != 0);
                 this.seed = seed;
+            }
+            public Xorshift64s(string data) : this(ulong.Parse(data))
+            {
+
             }
         }
         RNGGenerator rng;
@@ -169,6 +182,14 @@ public static partial class Utils
         {
             ulong dif = max - min;
             return min + NextULong() % dif;
+        }
+        public string Serialize()
+        {
+            return rng.Serialize();
+        }
+        public static RNG Deserialize(string data)
+        {
+            return new RNG(new Xorshift64s(data));
         }
         public RNG(ulong seed)
         {

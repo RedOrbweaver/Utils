@@ -1,4 +1,5 @@
 ﻿#if GODOT
+using System.Runtime.InteropServices.WindowsRuntime;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -86,6 +87,11 @@ public static partial class Utils
             _ => throw new Exception($"Unsupported attribute type: {tp}")
         };
     }
+    public static string GetFormattedTimeNow() => GetFormattedTime(DateTime.Now);
+    public static string GetFormattedTime(DateTime time)
+    {
+        return time.ToString().Replace(":", "").Replace(" ", "").Replace("/", "_").Replace("\\", "");
+    }
     public class EmissionCurve
     {
         float _factor, _speed, _min, _max;
@@ -112,6 +118,26 @@ public static partial class Utils
             this._min = min;
             offset = new RNG().NextFloat();;
         }
+    }
+    public static string GetTemporaryDirectory()
+    {
+        string path;
+        do
+        {
+            path = ConcatPaths(Constants.DataPaths.TEMPORATY_FILE_PATH, new RNG().NextULong().ToString());
+        } while(DirectoryExists(path));
+        EnsurePathExists(path);
+        return path;
+    }
+    public static string GetTemporaryFile()
+    {
+        string path;
+        do
+        {
+            path = ConcatPaths(Constants.DataPaths.TEMPORATY_FILE_PATH, new RNG().NextULong().ToString());
+        } while(FileExists(path));
+        WriteFile(path, "");
+        return path;
     }
 }
 #endif
