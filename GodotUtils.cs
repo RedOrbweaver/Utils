@@ -99,6 +99,24 @@ public static partial class Utils
     {
         return new Directory().FileExists(path);
     }
+    public static bool IsFile(string path)
+    {
+        bool isf = new Directory().FileExists(path);
+        if(isf)
+            return true;
+        if(new Directory().DirExists(path))
+            return false;
+        throw new Exception($"file/directory {path} does not exist");
+    }
+    public static bool IsDirectory(string path)
+    {
+        bool isd = new Directory().DirExists(path);
+        if(isd)
+            return true;
+        if(new Directory().FileExists(path))
+            return false;
+        throw new Exception($"file/directory {path} does not exist");
+    }
     public static string ReadFile(string path)
     {
         Assert(FileExists(path));
@@ -120,6 +138,41 @@ public static partial class Utils
     public static bool DirectoryExists(string path)
     {
         return new Directory().DirExists(path);
+    }
+    public static void DeleteFile(string path)
+    {
+        Assert(FileExists(path));
+        Assert(new Directory().Remove(path));
+    }
+    public static void DeleteDirectory(string path)
+    {
+        Assert(FileExists(path));
+        Assert(new Directory().Remove(path));
+    }
+    // Highly inefficient, especially for complex directory structures
+    public static void DeleteDirectoryRecursively(string path) 
+    {
+        var filesanddirs = ListDirectoryContentsRecursively(path);
+        List<string> directories = new List<string>();
+        foreach(var it in filesanddirs)
+        {
+            if(IsDirectory(it))
+                directories.Add(it);
+            else
+                DeleteFile(it);
+        }
+        while(directories.Count > 0)
+        {
+            var dircp = directories.ToList();
+            directories.Clear();
+            foreach(var it in directories)
+            {
+                if(new Directory().Remove(it) != Error.Ok)
+                {
+                    directories.Add(it);
+                }
+            }
+        }
     }
     public static List<T> GetChildrenRecrusively<T>(this Node root, bool restrichtomatchingparents = false)
     {
@@ -156,7 +209,7 @@ public static partial class Utils
     {
         Assert(b, $"An unspecified assertion failure, error code {b.ToString()}, has been triggered!", sourceLineNumber, memberName, sourceFilePath);
     }
-    public static List<string> ListDirectoryFilesRecursively(string path, Func<string, bool> filter)
+    public static List<string> ListDirectoryContentsRecursively(string path, Func<string, bool, bool> filter) // path, isfile -> bool
     {
         List<string> ret = new List<string>();
         Directory dm = new Directory();
@@ -167,11 +220,15 @@ public static partial class Utils
                 if (dm.DirExists(it))
                 {
                     ListRecursively(it);
+                    if(filter(it, false))
+                    {
+                        ret.Add(it);
+                    }
                 }
                 else
                 {
                     Assert(dm.FileExists(it));
-                    if (filter(it))
+                    if (filter(it, true))
                     {
                         ret.Add(it);
                     }
@@ -180,6 +237,14 @@ public static partial class Utils
         }
         ListRecursively(path);
         return ret;
+    }
+    public static List<string> ListDirectoryContentsRecursively(string path)
+    {
+        return ListDirectoryContentsRecursively(path, (s, b) => true);
+    }
+    public static List<string> ListDirectoryFilesRecursively(string path, Func<string, bool> filter)
+    {
+        return ListDirectoryContentsRecursively(path, (s, b) => b && filter(s));
     }
     public static List<string> ListDirectoryFilesRecursively(string path)
     {
