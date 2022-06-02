@@ -34,6 +34,18 @@ public class GlobalUtilsScript : Node
         _toExec.Enqueue(action);
         CallDeferred(nameof(DequeDeferred));
     }
+    Node _currentSceneRoot;
+    public void SetMainScene(Node node)
+    {
+        var root = GetTree().Root;
+        if(_currentSceneRoot != null)
+        {
+            Assert(_currentSceneRoot.GetParent() == root);
+            DestroyNode(_currentSceneRoot);
+        }
+        _currentSceneRoot = node;
+        root.AddChild(_currentSceneRoot);
+    }
     public static GlobalUtilsScript GUS;
     public GlobalUtilsScript()
     {

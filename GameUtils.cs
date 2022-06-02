@@ -139,5 +139,30 @@ public static partial class Utils
         WriteFile(path, "");
         return path;
     }
+    public static void SetMainScene(Node node)
+    {
+        GlobalUtilsScript.GUS.SetMainScene(node);
+    }
+    public static Node SetMainScene(PackedScene scene)
+    {
+        var node = scene.Instance();
+        Assert(node != null);
+        SetMainScene(node);
+        return node;
+    }
+    public static Node SetMainScene(string dir)
+    {
+        var scene = ResourceLoader.Load<PackedScene>(dir);
+        Assert(scene != null);
+        return SetMainScene(scene);
+    }
+    public static T SetMainScene<T>(PackedScene scene) where T : Node
+    {
+        return (T)SetMainScene(scene);
+    }
+    public static T SetMainScene<T>(string dir) where T : Node
+    {
+        return (T)SetMainScene(dir);
+    }
 }
 #endif
