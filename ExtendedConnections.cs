@@ -49,6 +49,15 @@ public static partial class Utils
         {
             handler(arg0, arg1, arg2, arg3, arg4, arg5);
         }
+        public void Grabber(Godot.Collections.Array args)
+        {
+            object[] oargs = new object[args.Count];
+            for(int i = 0; i < args.Count; i++)
+            {
+                oargs[i] = args[i];
+            }
+            handler(oargs);
+        }
         public void Grabber(string arg0)
         {
             handler(arg0);
@@ -77,14 +86,9 @@ public static partial class Utils
         {
             handler(arg0);
         }
-        public void Grabber(Godot.Collections.Array args)
+        public void Grabber(InputEvent arg0)
         {
-            object[] oargs = new object[args.Count];
-            for(int i = 0; i < args.Count; i++)
-            {
-                oargs[i] = args[i];
-            }
-            handler(oargs);
+            handler(arg0);
         }
         public SignalHandlerObject(SignalHandler handler)
         {
@@ -279,6 +283,82 @@ public static partial class Utils
     public static ConnectionHandle OnTextSubmitted(this LineEdit edit, Action<string> func)
     {
         return Connect(edit, "text_entered", (args) => func((string)args[0]));
+    }
+
+    public static ConnectionHandle OnDraw(this CanvasItem item, Action func)
+    {
+        return Connect(item, "draw", (args) => func());
+    }
+    public static ConnectionHandle OnHide(this CanvasItem item, Action func)
+    {
+        return Connect(item, "hide", (args) => func());
+    }
+    public static ConnectionHandle OnItemRectChanged(this CanvasItem item, Action func)
+    {
+        return Connect(item, "item_rect_changed", (args) => func());
+    }
+    public static ConnectionHandle OnVisibilityChanged(this CanvasItem item, Action<bool> func)
+    {
+        return Connect(item, "visibility_changed", (args) => func(item.Visible));
+    }
+
+    
+    public static ConnectionHandle OnFocusEntered(this Control control, Action func)
+    {
+        return Connect(control, "focus_entered", (args) => func());
+    }
+    public static ConnectionHandle OnFocusExited(this Control control, Action func)
+    {
+        return Connect(control, "focus_exited", (args) => func());
+    }
+    public static ConnectionHandle OnGuiInput(this Control control, Action<InputEvent> func)
+    {
+        return Connect(control, "gui_input", (args) => func((InputEvent)args[0]));
+    }
+    public static ConnectionHandle OnMinimumSizeChanged(this Control control, Action func)
+    {
+        return Connect(control, "minimum_size_changed", (args) => func());
+    }
+    public static ConnectionHandle OnModalClosed(this Control control, Action func)
+    {
+        return Connect(control, "modal_closed", (args) => func());
+    }
+    public static ConnectionHandle OnMouseEntered(this Control control, Action func)
+    {
+        return Connect(control, "mouse_entered", (args) => func());
+    }
+    public static ConnectionHandle OnMouseExited(this Control control, Action func)
+    {
+        return Connect(control, "mouse_exited", (args) => func());
+    }
+    public static ConnectionHandle OnResized(this Control control, Action func)
+    {
+        return Connect(control, "resized", (args) => func());
+    }
+    public static ConnectionHandle OnSizeFlagsChanged(this Control control, Action func)
+    {
+        return Connect(control, "size_flags_changed", (args) => func());
+    }
+
+    public static ConnectionHandle OnReady(this Node node, Action func)
+    {
+        return Connect(node, "ready", (args) => func());
+    }
+    public static ConnectionHandle OnRenamed(this Node node, Action func)
+    {
+        return Connect(node, "renamed", (args) => func());
+    }
+    public static ConnectionHandle OnTreeEntered(this Node node, Action func)
+    {
+        return Connect(node, "tree_entered", (args) => func());
+    }
+    public static ConnectionHandle OnTreeExited(this Node node, Action func)
+    {
+        return Connect(node, "tree_exited", (args) => func());
+    }
+    public static ConnectionHandle OnTreeExiting(this Node node, Action func)
+    {
+        return Connect(node, "tree_exiting", (args) => func());
     }
 }
 
