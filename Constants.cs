@@ -42,6 +42,20 @@ public static class Constants
         public const string SAVE_AGENTS_SUBFOLDER = "AGENTS";
 
         public const string TEMPORATY_FILE_PATH = "user://Temp";
+
+
+        public static List<string> REQUIRED_PATHS = new List<string>()
+        {
+            TILE_DIRECTORY,
+            TILESET_DIRECTORY,
+            TILE_MODEL_DIRECTORY,
+            PLAYER_THEMES_DIRECTORY,
+            THEMEABLE_ICONS_DIRECTORY,
+            SAVES_BASE_PATH,
+            SAVES_LOCAL_PATH,
+            SAVES_MULTIPLAYER_PATH,
+            STATISTICS_PATH,
+        };
     }
 
     public static class AssetPaths
