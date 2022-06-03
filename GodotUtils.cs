@@ -216,6 +216,16 @@ public static partial class Utils
             }
         }
     }
+    public static List<T> GetChildren<T>(this Node root) where T : Node
+    {
+        List<T> ret = new List<T>(8);
+        foreach(var it in root.GetChildren())
+        {
+            if(it is T t)
+                ret.Add(t);
+        }
+        return ret;
+    }
     public static List<T> GetChildrenRecrusively<T>(this Node root, bool restrichtomatchingparents = false)
     {
         List<T> ret = new List<T>(8);

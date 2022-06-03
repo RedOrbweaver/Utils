@@ -90,6 +90,10 @@ public static partial class Utils
         {
             handler(arg0);
         }
+        public void Grabber(Camera arg0, InputEvent arg1, Vector3 arg2, Vector3 arg3, int arg4)
+        {
+            handler(arg0, arg1, arg2, arg3, arg4);
+        }
         public SignalHandlerObject(SignalHandler handler)
         {
             this.handler = handler;
@@ -227,6 +231,14 @@ public static partial class Utils
     {
         return Connect(obj, "mouse_exited", (args) => func());
     }
+    public static ConnectionHandle OnInputEvent(this Area obj, Action<Camera, InputEvent, Vector3, Vector3, int> func)
+    {
+        return Connect(obj, "input_event", (args) => 
+        {
+            Assert(args.Length == 5, "Invalid number of arguments");
+            func((Camera)args[0], (InputEvent)args[1], (Vector3)args[2], (Vector3)args[3], (int)args[4]);
+        });
+    }
 
     public static ConnectionHandle OnFileSelected(this FileDialog dialog, Action<string> func)
     {
@@ -359,6 +371,19 @@ public static partial class Utils
     public static ConnectionHandle OnTreeExiting(this Node node, Action func)
     {
         return Connect(node, "tree_exiting", (args) => func());
+    }
+
+    public static ConnectionHandle OnGameplayEntered(this Spatial spatial, Action func)
+    {
+        return Connect(spatial, "gameplay_entered", (args) => func());
+    }
+    public static ConnectionHandle OnGameplayExited(this Spatial spatial, Action func)
+    {
+        return Connect(spatial, "gameplay_exited", (args) => func());
+    }
+    public static ConnectionHandle OnVisibilityChanged(this Spatial spatial, Action<bool> func)
+    {
+        return Connect(spatial, "gameplay_entered", (args) => func(spatial.Visible));
     }
 }
 
